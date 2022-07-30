@@ -2,6 +2,7 @@ const {
     client,
     createUser,
     getAllUsers,
+    updateUser,
 } = require('./index');
 
 const dropTables = async () => {
@@ -27,7 +28,10 @@ const createTables = async () => {
         CREATE TABLE users (
             id SERIAL PRIMARY KEY,
             username varchar(255) UNIQUE NOT NULL,
-            password varchar(255) NOT NULL
+            password varchar(255) NOT NULL,
+            name varchar(255) NOT NULL,
+            location varchar(255) NOT NULL,
+            active BOOLEAN DEFAULT true
             );
         `);
 
@@ -42,9 +46,9 @@ const createInitialUsers = async () => {
     try {
         console.log("starting to create users...");
 
-        const albert = await createUser({username: 'albert', password: 'bertie99'});
-        const sandra = await createUser({username: 'sandra', password: '2dandy4me'});
-        const glamgal = await createUser({username: 'glamgal', password: 'soglam'});
+        await createUser({username: 'albert', password: 'bertie99', name: 'Al Bert', location: 'Sidney, Australia'});
+        await createUser({username: 'sandra', password: '2dandy4me', name: 'Just Sandra', location: "Ain't tellin'"});
+        await createUser({username: 'glamgal', password: 'soglam', name: 'Joshua', location: 'Upper East Side'});
 
         console.log("finished creating users");
     } catch(error) {
@@ -71,8 +75,17 @@ const testDB = async () => {
     try {
         console.log("starting to test database....");
 
+        console.log("calling getAllUsers")
+
         const users = await getAllUsers();
-        console.log("getAllUsers:", users);
+        console.log("result:", users);
+
+        console.log("calling updateUser on users[0]")
+        const updateUserResult = await updateUser(users[0].id, {
+            name: "Names Goodman",
+            location: "An area adjacent to a location"
+        });
+        console.log("result:", updateUserResult);
 
         console.log("finished database tests");
     } catch (error) {
