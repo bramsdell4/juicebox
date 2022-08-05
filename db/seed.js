@@ -43,17 +43,20 @@ const createTables = async () => {
             location varchar(255) NOT NULL,
             active BOOLEAN DEFAULT true
             );
+
         CREATE TABLE posts (
             id SERIAL PRIMARY KEY,
             "authorId" INTEGER REFERENCES users(id),
-            title varchar (255) NOT NULL,
+            title varchar(255) NOT NULL,
             content TEXT NOT NULL,
             active BOOLEAN DEFAULT true
         );
+
         CREATE TABLE tags(
             id SERIAL PRIMARY KEY,
             name varchar(255) UNIQUE NOT NULL
         );
+
         CREATE TABLE post_tags (
             "postId" INTEGER REFERENCES posts(id),
             "tagId" INTEGER REFERENCES tags(id),
@@ -103,6 +106,7 @@ const createIntitalPosts = async () => {
         const [albert, sandra, glamgal] = await getAllUsers();
 
         console.log("starting to create posts..");
+//something here is breaking....why, is it in createPost?
         await createPost({
             authorId: albert.id,
             title: "first",
@@ -112,24 +116,25 @@ const createIntitalPosts = async () => {
 
         await createPost({
             authorId: sandra.id,
-            title: "how work?",
-            content: "srsly halp plz :[",
+            title: "how work",
+            content: "srsly halp plz",
             tags: ["#happy", "#worst-day-ever"]
         });
 
         await createPost({
             authorId: glamgal.id,
             title: "fierce glam",
-            content: " like OMG thats totes adorbs :3",
+            content: " like OMG thats totes adorbs",
             tags: ["#happy", "#youcandoanything", "#catmandoeverything"]
         });
+
         console.log("fabulosly finishing creating hella posts");
     } catch (error) {
         console.log("error creating posts");
         throw error;
     }
 }
-/*
+
 const createInitialTags = async () => {
     try {
         console.log("Starting to create tags...");
@@ -153,7 +158,6 @@ const createInitialTags = async () => {
         throw error;
     }
 }
-*/
 
 const rebuildDB = async () => {
     try {
@@ -163,7 +167,7 @@ const rebuildDB = async () => {
         await createTables();
         await createInitialUsers();
         await createIntitalPosts();
-       // await createInitialTags();
+        await createInitialTags();
     } catch (error) {
         console.log("error at rebuild");
         throw error;

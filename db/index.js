@@ -68,9 +68,9 @@ const getUserById = async (userId) => {
     }
 }
 
-const createPost = async({
+const createPost = async({//does authorId need to be in quotes? does title? the numbers match(what do the numbers mean mason)
     authorId,
-    title,
+    title,//<======== problem child
     content,
     tags = []
 }) => {
@@ -204,7 +204,7 @@ const getPostsByTagName = async (tagName) => {
         SELECT posts.id
         FROM posts
         JOIN post_tags ON posts.id=post_tags."postId"
-        JOIN tags ON tags.id+post_tags."tagId'
+        JOIN tags ON tags.id=post_tags."tagId'
         WHERE tags.name=$1;
         `, [tagName]);
 
