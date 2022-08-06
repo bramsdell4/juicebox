@@ -75,9 +75,9 @@ const createPost = async({//does authorId need to be in quotes? does title? the 
     tags = []
 }) => {
     try {
-        const { rows: [post]} = await client.query(`
+        const { rows: [post] } = await client.query(`
         INSERT INTO posts("authorId", title, content)
-        VALUES($1, $2, $3)
+        VALUES ($1, $2, $3)
         RETURNING *;
         `, [authorId, title, content]);
 
@@ -94,7 +94,7 @@ const updatePost = async (postId, fields = {}) => {
     delete fields.tags;
 
     const setString = Object.keys(fields).map(
-        (key, index) => `"${key}"=$${index = 1}`
+        (key, index) => `"${key}"=$${index + 1}`
     ).join(`, `);
     try {
     if (setString.length > 0) {
@@ -137,7 +137,7 @@ const getAllPosts = async () => {
         FROM posts;
         `);
 
-        const posts = await Promise.all(postIds.mao(
+        const posts = await Promise.all(postIds.map(
             post => getPostById( post.id )
         ));
 
@@ -204,7 +204,7 @@ const getPostsByTagName = async (tagName) => {
         SELECT posts.id
         FROM posts
         JOIN post_tags ON posts.id=post_tags."postId"
-        JOIN tags ON tags.id=post_tags."tagId'
+        JOIN tags ON tags.id=post_tags."tagId"
         WHERE tags.name=$1;
         `, [tagName]);
 
@@ -219,7 +219,7 @@ const getPostsByTagName = async (tagName) => {
 const createTags = async (tagList) => {
     if (tagList.length === 0) {
         return;
-    }
+    } 
     const insertValues = tagList.map((_, index) => `$${index + 1}`).join('), (');
     const selectValues = tagList.map((_, index) => `$${index + 1}`).join(', ');
     try {
@@ -239,11 +239,11 @@ const createTags = async (tagList) => {
     }
 }
 
-const createPostTag = async (postId, tagId) => {
+const createPostTag = async (postId, tagId) => {// IT WAS HERE!!!!! comma was a period
     try {
         await client.query(`
         INSERT INTO post_tags("postId", "tagId")
-        VALUES ($1. $2)
+        VALUES ($1, $2)
         ON CONFLICT ("postId", "tagId") DO NOTHING;
         `, [postId, tagId]);
     } catch (error) {
@@ -274,6 +274,20 @@ const getAllTags = async () => {
     }
 }
 
+const getUserByUsername = async (username) => {
+    try {
+        const { rows: [user]} = await client.query(`
+        
+        SELECT *
+        FROM users
+        WHERE username=$1;
+        `, [username]);
+        return user;
+    }catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {  
     client,
     createUser,
@@ -285,8 +299,10 @@ module.exports = {
     getAllPosts,
     getPostsByUser,
     getPostsByTagName,
+    getPostById,
     createTags,
     getAllTags,
     createPostTag,
-    addTagsToPost
+    addTagsToPost,
+    getUserByUsername
   }
