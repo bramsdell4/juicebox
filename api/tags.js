@@ -14,5 +14,14 @@ tagsRouter.get('/posts', async (req, res) => {
         tags 
     });
 });
+tagsRouter.get('/:tagName/posts', async (req, res, next) => {
+    try {
+        const tag = fetch(`/api/tags/${tag}/posts`);
+        const response = await (tag);
+        res.send{posts: response}
+    }catch ({ name, message }) {
+        ({name, message})
+    }
+});
 
 module.exports = tagsRouter;

@@ -68,9 +68,9 @@ const getUserById = async (userId) => {
     }
 }
 
-const createPost = async({//does authorId need to be in quotes? does title? the numbers match(what do the numbers mean mason)
+const createPost = async({
     authorId,
-    title,//<======== problem child
+    title,
     content,
     tags = []
 }) => {
